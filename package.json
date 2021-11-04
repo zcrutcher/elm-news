@@ -1,0 +1,30 @@
+{
+  "name": "elm-news",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zcrutcher/elm-news.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zcrutcher/elm-news/issues"
+  },
+  "homepage": "https://github.com/zcrutcher/elm-news#readme",
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.5.1",
+    "elm-webpack-loader": "^8.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "sass": "^1.43.4",
+    "sass-loader": "^12.3.0",
+    "webpack": "^5.61.0",
+    "webpack-cli": "^4.9.1"
+  }
+}
