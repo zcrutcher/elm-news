@@ -14,7 +14,7 @@ body {
 }
 
 h1 {
-  font-size: 30px;
+  font-size: 4rem;
 }
 
 .article {
@@ -65,31 +65,13 @@ h1 {
   padding: 0;
 }
 
-.showme {
-  z-index: -1;
-  opacity: 0.6;
-  transition: 0.6s;
-  padding: 8px;
-  width: 100%;
-  font-size: 14px;
-  background-color: #c8d5b9;
-  overflow: hidden;
-}
-
-.showhim:hover .showme {
-  z-index: 0;
-  background-color: #c8d5b9;
-  opacity: 1;
-  border-radius: 0 0 8px 8px;
-}
-
 a {
   text-decoration: inherit;
   color: inherit;
 }
 
 .search {
-  font-size: 18px;
+  font-size: 3rem;
   width: 100%;
   padding: 0 16px;
   background-color: transparent;
@@ -99,12 +81,10 @@ a {
 
 .search-form {
   display: flex;
-  max-width: 720px;
-  min-width: 500px;
   background-color: darkgray;
   outline: none;
   align-items: center;
-  height: 40px;
+  height: 5rem;
   padding: 5px;
   border-radius: 8px;
 }
@@ -123,12 +103,80 @@ a {
 }
 
 .search-btn {
-  height: 40px;
-  width: 40px;
+  height: 4rem;
+  width: 4rem;
   border-radius: 50%;
   padding: 5px;
 }
 
 input::placeholder {
   color: lightgray;
+}
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  max-height: fit-content;
+  margin: 15px;
+  padding: 8px;
+  border-bottom: 2px solid black;
+  width: 95%;
+  .card-info {
+    display: flex;
+    flex-direction: column;
+    padding-left: 8px;
+    h1 {
+      margin-top: 0;
+    }
+    p {
+      margin: 0;
+    }
+  }
+  .card-img {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-content: flex-end;
+    height: 100%;
+    width: 100%;
+    img {
+      margin: 15px;
+      padding: 5px 5px 0 10px;
+      max-width: 300px;
+      max-height: 150px;
+    }
+  }
+}
+
+@media (min-width: 500px) {
+  .search-form {
+    width: 95%;
+    height: 6rem;
+    font-size: 4rem;
+  }
+  .card {
+    .card-info {
+      h3 {
+        font-size: 1.7rem;
+      }
+      p {
+        font-size: 1.5rem;
+        padding: 8px;
+      }
+    }
+  }
+}
+
+@media (min-width: 1281px) {
+  h1 {
+    font-size: 3rem;
+  }
+  .search {
+    font-size: 2rem;
+  }
+  .search-form {
+    height: 4rem;
+    font-size: 2rem;
+    max-width: 50%;
+  }
 }

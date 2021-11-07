@@ -1,8 +1,9 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, a, button, div, form, h1, h3, h5, img, input, label, span, text)
-import Html.Attributes exposing (class, href, id, name, placeholder, src, target, type_, value)
+import Date exposing (day, month)
+import Html exposing (Html, a, button, div, form, h1, h3, h5, img, input, label, p, span, text)
+import Html.Attributes exposing (alt, class, datetime, href, id, name, placeholder, src, target, type_, value)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http exposing (..)
 import Json.Decode as Decode exposing (Decoder, int, list, string, succeed)
@@ -151,11 +152,14 @@ searchForm =
 displayArticle : Article -> Html Msg
 displayArticle article =
     a [ href article.link, target "_blank", class "article-link" ]
-        [ div [ class "article", class "showhim" ]
-            [ span [ class "article-title" ] [ text article.title ]
-            , span [ class "article-published-date" ] [ text article.published_date ]
-            , img [ class "article-img", src article.media ] []
-            , span [ class "article-excerpt", class "showme" ] [ text article.excerpt ]
+        [ div [ class "card" ]
+            [ div [ class "card-info" ]
+                [ h3 [] [ text article.title ]
+                , p [] [ text article.excerpt ]
+                ]
+            , div [ class "card-img" ]
+                [ img [ src article.media, alt article.title ] []
+                ]
             ]
         ]
 
@@ -171,9 +175,6 @@ view model =
     div []
         [ h1 [] [ text "Elm News Search" ]
         , searchForm
-
-        -- , input [ type_ "text", onInput SearchTerm ] []
-        -- , button [ onClick Fetch ] [ text "Search" ]
         , viewArticles model.response.articles
         ]
 
