@@ -141,7 +141,7 @@ searchForm =
         [ h3 [] [ text "testing this out" ]
         , form [ onSubmit Fetch, class "search-form" ]
             [ input [ type_ "text", name "search", id "search", onInput SearchTerm, placeholder "Search for topics and news", class "search" ] []
-            , input [ type_ "image", src "../assets/search-icon.png", class "search-btn" ]
+            , input [ id "search-icon", type_ "image", src "/search-icon.png", class "search-btn" ]
                 [ input [ type_ "submit" ] []
                 ]
             ]
