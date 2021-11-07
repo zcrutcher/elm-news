@@ -139,8 +139,7 @@ update msg model =
 searchForm : Html Msg
 searchForm =
     div [ class "search-wrapper" ]
-        [ h3 [] [ text "testing this out" ]
-        , form [ onSubmit Fetch, class "search-form" ]
+        [ form [ onSubmit Fetch, class "search-form" ]
             [ input [ type_ "text", name "search", id "search", onInput SearchTerm, placeholder "Search for topics and news", class "search" ] []
             , input [ id "search-icon", type_ "image", src (assetUrl "/assets/search-icon.png"), class "search-btn" ]
                 [ input [ type_ "submit" ] []
