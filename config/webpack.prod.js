@@ -7,7 +7,7 @@ module.exports = {
   entry: {
     app: [src + "/Main.elm", src + "/index.js"],
   },
-  mode: "development",
+  mode: "production",
   output: {
     filename: "[name].js",
     path: root + "/dist",
@@ -17,11 +17,7 @@ module.exports = {
     extensions: [".js", ".elm"],
     modules: ["node_modules"],
   },
-  devServer: {
-    static: {
-      directory: path.join(__dirname, "../dist"),
-    },
-  },
+  target: "node",
   module: {
     rules: [
       {
@@ -37,7 +33,7 @@ module.exports = {
           {
             loader: "elm-webpack-loader",
             options: {
-              debug: true,
+              debug: false,
               optimize: false,
             },
           },
@@ -53,14 +49,8 @@ module.exports = {
         type: "asset/resource",
       },
       {
-        // Loads the javacript into html template provided.
-        // Entry point is set below in HtmlWebPackPlugin in Plugins
-        test: /\.html$/,
-        use: [{ loader: "html-loader" }],
-      },
-      {
-        test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components|server.js)/,
         use: {
           loader: "babel-loader",
           options: {
@@ -68,6 +58,12 @@ module.exports = {
             plugins: ["@babel/plugin-syntax-dynamic-import"],
           },
         },
+      },
+      {
+        // Loads the javacript into html template provided.
+        // Entry point is set below in HtmlWebPackPlugin in Plugins
+        test: /\.html$/,
+        use: [{ loader: "html-loader" }],
       },
     ],
   },
