@@ -5,13 +5,13 @@ const src = path.resolve(__dirname, "../src");
 const root = path.resolve(__dirname, "../");
 module.exports = {
   entry: {
-    app: [src + "/Main.elm", src + "/index.js"],
+    app: src + "/index.js",
   },
   mode: "production",
   output: {
     filename: "[name].js",
     path: root + "/dist",
-    publicPath: root + "/dist",
+    publicPath: "/dist",
   },
   resolve: {
     extensions: [".js", ".elm"],

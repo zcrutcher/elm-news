@@ -1,27 +1,27 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
-console.log("Path being logged: ", path.resolve(__dirname));
 const src = path.resolve(__dirname, "../src");
 const root = path.resolve(__dirname, "../");
+
 module.exports = {
   entry: {
-    app: [src + "/Main.elm", src + "/index.js"],
+    app: src + "/index.js",
   },
   mode: "development",
   output: {
     filename: "[name].js",
     path: root + "/dist",
-    publicPath: root + "/dist",
+    publicPath: "/dist",
   },
   resolve: {
     extensions: [".js", ".elm"],
     modules: ["node_modules"],
   },
-  devServer: {
-    static: {
-      directory: path.join(__dirname, "../dist"),
-    },
-  },
+  // devServer: {
+  //   static: {
+  //     directory: path.join(__dirname, "../dist"),
+  //   },
+  // },
   module: {
     rules: [
       {
@@ -52,12 +52,12 @@ module.exports = {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: "asset/resource",
       },
-      {
-        // Loads the javacript into html template provided.
-        // Entry point is set below in HtmlWebPackPlugin in Plugins
-        test: /\.html$/,
-        use: [{ loader: "html-loader" }],
-      },
+      // {
+      //   // Loads the javacript into html template provided.
+      //   // Entry point is set below in HtmlWebPackPlugin in Plugins
+      //   test: /\.html$/,
+      //   use: [{ loader: "html-loader" }],
+      // },
       {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,
@@ -77,7 +77,7 @@ module.exports = {
       chunks: ["app"],
       template: path.join(__dirname, "../templates/index.html"),
       filename: "index.html",
-      inject: "head",
+      inject: "body",
     }),
   ],
 };

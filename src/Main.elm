@@ -18,20 +18,27 @@ import WebpackAsset exposing (assetUrl)
 
 getArticles : String -> Cmd Msg
 getArticles searchTerm =
-    let
-        requestHeader : List Header
-        requestHeader =
-            [ Http.header "x-api-key" "4sO4JEcX3HwMRR7yRvxAQAE67xRBVj__psUpcKmioNc" ]
-    in
-    Http.request
-        { method = "GET"
-        , headers = requestHeader
-        , url = String.concat [ "https://api.newscatcherapi.com/v2/search?q=", searchTerm, "&lang=en" ]
-        , body = Http.emptyBody
+    Http.get
+        { url = String.concat [ "/getAPIResponse/", searchTerm ]
         , expect = Http.expectJson GetArticles responseDecoder
-        , timeout = Nothing
-        , tracker = Nothing
         }
+
+
+
+-- let
+--     requestHeader : List Header
+--     requestHeader =
+--         [ Http.header "x-api-key" "4sO4JEcX3HwMRR7yRvxAQAE67xRBVj__psUpcKmioNc" ]
+-- in
+-- Http.request
+--     { method = "GET"
+--     , headers = requestHeader
+--     , url = String.concat [ "https://api.newscatcherapi.com/v2/search?q=", searchTerm, "&lang=en" ]
+--     , body = Http.emptyBody
+--     , expect = Http.expectJson GetArticles responseDecoder
+--     , timeout = Nothing
+--     , tracker = Nothing
+--     }
 
 
 articleDecoder : Decoder Article
@@ -142,7 +149,7 @@ searchForm =
     div [ class "search-wrapper" ]
         [ form [ onSubmit Fetch, class "search-form" ]
             [ input [ type_ "text", name "search", id "search", onInput SearchTerm, placeholder "Search for topics and news", class "search" ] []
-            , input [ id "search-icon", type_ "image", src (assetUrl "/assets/search-icon.png"), class "search-btn" ]
+            , input [ id "search-icon", type_ "image", src "/assets/search-icon.png", class "search-btn" ]
                 [ input [ type_ "submit" ] []
                 ]
             ]

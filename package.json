@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev-start": "npx webpack-dev-server --config=config/webpack.dev.js",
+    "dev-start": "node ./src/server.js",
     "dev-webpack": "rm -rf dist && npx webpack --config=config/webpack.dev.js",
     "start": "node ./src/server.js",
     "webpack": "rm -rf dist && npx webpack --config=config/webpack.prod.js"
