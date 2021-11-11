@@ -4,9 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev-start": "node ./src/server.js",
+    "dev-start": "node ./server/server.js",
     "dev-webpack": "rm -rf dist && npx webpack --config=config/webpack.dev.js",
-    "start": "node ./src/server.js",
+    "start": "node ./server/server.js",
     "webpack": "rm -rf dist && npx webpack --config=config/webpack.prod.js"
   },
   "repository": {
@@ -37,8 +37,10 @@
   "dependencies": {
     "babel-elm-assets-plugin": "^1.2.3",
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "html-loader": "^3.0.1",
+    "node-fetch": "^2.1.0",
     "style-loader": "^3.3.1",
     "webpack-dev-server": "^4.4.0"
   }

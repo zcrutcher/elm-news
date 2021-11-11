@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
+
 const src = path.resolve(__dirname, "../src");
 const root = path.resolve(__dirname, "../");
 
@@ -17,6 +18,7 @@ module.exports = {
     extensions: [".js", ".elm"],
     modules: ["node_modules"],
   },
+  target: "node",
   // devServer: {
   //   static: {
   //     directory: path.join(__dirname, "../dist"),
@@ -60,7 +62,7 @@ module.exports = {
       // },
       {
         test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /(node_modules|bower_components|server)/,
         use: {
           loader: "babel-loader",
           options: {

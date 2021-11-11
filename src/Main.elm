@@ -19,7 +19,7 @@ import WebpackAsset exposing (assetUrl)
 getArticles : String -> Cmd Msg
 getArticles searchTerm =
     Http.get
-        { url = String.concat [ "/getAPIResponse/", searchTerm ]
+        { url = String.concat [ "/get-articles/", searchTerm ]
         , expect = Http.expectJson GetArticles responseDecoder
         }
 
