@@ -2,13 +2,16 @@ module Main exposing (..)
 
 import Browser
 import Date exposing (day, month)
+import DateFormat
 import Html exposing (Html, a, button, div, form, h1, h3, h5, img, input, label, p, span, text)
 import Html.Attributes exposing (alt, class, datetime, href, id, name, placeholder, src, target, type_, value)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http exposing (..)
+import Iso8601 exposing (toTime)
 import Json.Decode as Decode exposing (Decoder, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as Encode
+import Time exposing (Posix, utc)
 import WebpackAsset exposing (assetUrl)
 
 
@@ -41,11 +44,23 @@ getArticles searchTerm =
 --     }
 
 
+dateFormatter : Posix -> String
+dateFormatter =
+    DateFormat.format
+        [ DateFormat.monthNameFull
+        , DateFormat.text " "
+        , DateFormat.dayOfMonthSuffix
+        , DateFormat.text ", "
+        , DateFormat.yearNumber
+        ]
+        utc
+
+
 articleDecoder : Decoder Article
 articleDecoder =
     succeed Article
         |> required "title" string
-        |> required "published_date" string
+        |> required "published_date" decodePublishedDate
         |> required "link" string
         |> required "clean_url" string
         |> required "excerpt" string
@@ -53,6 +68,20 @@ articleDecoder =
         |> optional "rights" string "unknown"
         |> required "authors" (list string)
         |> optional "media" string "noimage"
+
+
+decodePublishedDate : Decoder Posix
+decodePublishedDate =
+    Decode.string
+        |> Decode.andThen
+            (\stringDate ->
+                case Iso8601.toTime stringDate of
+                    Err _ ->
+                        Decode.fail (" Invalid Date " ++ stringDate)
+
+                    Ok date ->
+                        Decode.succeed date
+            )
 
 
 responseDecoder : Decoder Response
@@ -68,7 +97,7 @@ responseDecoder =
 
 type alias Article =
     { title : String
-    , published_date : String
+    , published_date : Posix
     , link : String
     , clean_url : String
     , excerpt : String
@@ -162,6 +191,9 @@ displayArticle article =
         [ div [ class "card" ]
             [ div [ class "card-info" ]
                 [ h3 [] [ text article.title ]
+
+                -- testing
+                , h3 [] [ article.published_date |> dateFormatter |> text ]
                 , p [] [ text article.excerpt ]
                 ]
             , div [ class "card-img" ]
