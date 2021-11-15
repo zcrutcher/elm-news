@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Date exposing (day, month)
+import Date exposing (Date, Month, day, fromCalendarDate, fromIsoString, fromPosix, month)
 import DateFormat
 import Html exposing (Html, a, button, div, form, h1, h3, h5, img, input, label, p, span, text)
 import Html.Attributes exposing (alt, class, datetime, href, id, name, placeholder, src, target, type_, value)
@@ -11,7 +11,7 @@ import Iso8601 exposing (toTime)
 import Json.Decode as Decode exposing (Decoder, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as Encode
-import Time exposing (Posix, utc)
+import Time exposing (Month(..), Posix, millisToPosix, toMonth, toYear, utc)
 import WebpackAsset exposing (assetUrl)
 
 
@@ -77,11 +77,16 @@ decodePublishedDate =
             (\stringDate ->
                 case Iso8601.toTime stringDate of
                     Err _ ->
-                        Decode.fail (" Invalid Date " ++ stringDate)
+                        Decode.succeed (Time.millisToPosix 0)
 
                     Ok date ->
                         Decode.succeed date
             )
+
+
+
+-- Try and use fromIsoString and see if that will convert
+-- as Posix gives nothing but failures
 
 
 responseDecoder : Decoder Response
@@ -173,6 +178,60 @@ update msg model =
 ---- VIEW ----
 
 
+toDanishMonth : Time.Month -> String
+toDanishMonth month =
+    case month of
+        Jan ->
+            "Jan"
+
+        Feb ->
+            "Feb"
+
+        Mar ->
+            "Mar"
+
+        Apr ->
+            "Apr"
+
+        May ->
+            "May"
+
+        Jun ->
+            "Jun"
+
+        Jul ->
+            "Jul"
+
+        Aug ->
+            "Aug"
+
+        Sep ->
+            "Sep"
+
+        Oct ->
+            "Oct"
+
+        Nov ->
+            "Nov"
+
+        Dec ->
+            "Dec"
+
+
+viewDatePublished : Posix -> Html Msg
+viewDatePublished date =
+    let
+        strMonth : String
+        strMonth =
+            Time.toMonth utc date |> toDanishMonth
+
+        strYear : Int
+        strYear =
+            Time.toYear utc date
+    in
+    div [] [ String.concat [ strMonth, strYear |> String.fromInt ] |> text ]
+
+
 searchForm : Html Msg
 searchForm =
     div [ class "search-wrapper" ]
@@ -191,9 +250,7 @@ displayArticle article =
         [ div [ class "card" ]
             [ div [ class "card-info" ]
                 [ h3 [] [ text article.title ]
-
-                -- testing
-                , h3 [] [ article.published_date |> dateFormatter |> text ]
+                , viewDatePublished article.published_date
                 , p [] [ text article.excerpt ]
                 ]
             , div [ class "card-img" ]
