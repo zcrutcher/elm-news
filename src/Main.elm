@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Date exposing (Date, Month, day, fromCalendarDate, fromIsoString, fromPosix, month)
+import Date exposing (Date, Month, day, fromCalendarDate, fromIsoString, fromPosix, month, today)
 import DateFormat
 import Html exposing (Html, a, button, div, form, h1, h3, h5, img, input, label, p, span, text)
 import Html.Attributes exposing (alt, class, datetime, href, id, name, placeholder, src, target, type_, value)
@@ -44,18 +44,6 @@ getArticles searchTerm =
 --     }
 
 
-dateFormatter : Posix -> String
-dateFormatter =
-    DateFormat.format
-        [ DateFormat.monthNameFull
-        , DateFormat.text " "
-        , DateFormat.dayOfMonthSuffix
-        , DateFormat.text ", "
-        , DateFormat.yearNumber
-        ]
-        utc
-
-
 articleDecoder : Decoder Article
 articleDecoder =
     succeed Article
@@ -75,18 +63,25 @@ decodePublishedDate =
     Decode.string
         |> Decode.andThen
             (\stringDate ->
-                case Iso8601.toTime stringDate of
-                    Err _ ->
-                        Decode.succeed (Time.millisToPosix 0)
-
+                case Iso8601.toTime (String.replace " 00:00:00" "" stringDate) of
                     Ok date ->
                         Decode.succeed date
+
+                    Err _ ->
+                        Decode.succeed
+                            (Time.millisToPosix 0)
             )
 
 
+decodePubDate : Decoder PublishedDatePrecision
+decodePubDate =
+    succeed PublishedDatePrecision
+        |> required "date" Decode.string
 
--- Try and use fromIsoString and see if that will convert
--- as Posix gives nothing but failures
+
+type alias PublishedDatePrecision =
+    { date : String
+    }
 
 
 responseDecoder : Decoder Response
@@ -178,8 +173,8 @@ update msg model =
 ---- VIEW ----
 
 
-toDanishMonth : Time.Month -> String
-toDanishMonth month =
+toStrMonth : Time.Month -> String
+toStrMonth month =
     case month of
         Jan ->
             "Jan"
@@ -221,15 +216,19 @@ toDanishMonth month =
 viewDatePublished : Posix -> Html Msg
 viewDatePublished date =
     let
-        strMonth : String
-        strMonth =
-            Time.toMonth utc date |> toDanishMonth
+        strMonth : Posix -> String
+        strMonth d =
+            Time.toMonth utc d |> toStrMonth
 
-        strYear : Int
-        strYear =
-            Time.toYear utc date
+        strYear : Posix -> Int
+        strYear d =
+            Time.toYear utc d
+
+        strDay : Posix -> Int
+        strDay d =
+            Time.toDay utc d
     in
-    div [] [ String.concat [ strMonth, strYear |> String.fromInt ] |> text ]
+    div [ class "date-display" ] [ String.concat [ strMonth date, " ", strDay date |> String.fromInt, " ", strYear date |> String.fromInt ] |> text ]
 
 
 searchForm : Html Msg
