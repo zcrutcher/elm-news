@@ -3,7 +3,7 @@ module Main exposing (..)
 import Browser
 import Date exposing (Date, Month, day, fromCalendarDate, fromIsoString, fromPosix, month, today)
 import DateFormat
-import Html exposing (Html, a, button, div, form, h1, h3, h5, img, input, label, p, span, text)
+import Html exposing (Html, a, button, div, form, h1, h2, h3, h5, img, input, label, p, span, text)
 import Html.Attributes exposing (alt, class, datetime, href, id, name, placeholder, src, target, type_, value)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http exposing (..)
@@ -68,15 +68,8 @@ decodePublishedDate =
                         Decode.succeed date
 
                     Err _ ->
-                        Decode.succeed
-                            (Time.millisToPosix 0)
+                        Decode.fail "Decode failure"
             )
-
-
-decodePubDate : Decoder PublishedDatePrecision
-decodePubDate =
-    succeed PublishedDatePrecision
-        |> required "date" Decode.string
 
 
 type alias PublishedDatePrecision =
@@ -121,6 +114,7 @@ type alias Response =
 type alias Model =
     { searchTerm : String
     , response : Response
+    , errorMessage : String
     }
 
 
@@ -135,6 +129,7 @@ initialModel =
         , page_size = 0
         , articles = []
         }
+    , errorMessage = ""
     }
 
 
@@ -153,6 +148,35 @@ type Msg
     | Fetch
 
 
+generateErrorMessage : Http.Error -> String
+generateErrorMessage error =
+    case error of
+        Http.Timeout ->
+            "Server is taking too long to respond. Please try again later."
+
+        Http.NetworkError ->
+            "Unable to reach server."
+
+        Http.BadUrl _ ->
+            "Request failed due to bad endpoint address"
+
+        Http.BadStatus statusCode ->
+            "Request failed with status code: " ++ String.fromInt statusCode
+
+        Http.BadBody _ ->
+            "Request returned no search results, or the response was malformed."
+
+
+type alias ErrorStatus =
+    { errorStatus : String }
+
+
+decodeBadBody : Decoder ErrorStatus
+decodeBadBody =
+    succeed ErrorStatus
+        |> required "status" string
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -162,11 +186,11 @@ update msg model =
         GetArticles (Ok res) ->
             ( { model | response = { status = res.status, total_hits = res.total_hits, total_pages = res.total_pages, page = res.page, page_size = res.page_size, articles = res.articles } }, Cmd.none )
 
-        GetArticles (Err _) ->
-            ( model, Cmd.none )
+        GetArticles (Err err) ->
+            ( { model | errorMessage = generateErrorMessage err, response = initialModel.response }, Cmd.none )
 
         Fetch ->
-            ( { model | response = model.response }, getArticles model.searchTerm )
+            ( { model | errorMessage = "", response = model.response }, getArticles model.searchTerm )
 
 
 
@@ -265,11 +289,21 @@ viewArticles articles =
         (List.map displayArticle articles)
 
 
+viewError : Bool -> String -> Html Msg
+viewError display message =
+    if display == True then
+        h2 [ class "error-msg" ] [ text message ]
+
+    else
+        text ""
+
+
 view : Model -> Html Msg
 view model =
     div []
         [ h1 [] [ text "Elm News Search" ]
         , searchForm
+        , viewError (String.length model.errorMessage > 0) model.errorMessage
         , viewArticles model.response.articles
         ]
 
