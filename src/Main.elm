@@ -1,75 +1,26 @@
 module Main exposing (..)
 
 import Browser
-import Date exposing (Date, Month, day, fromCalendarDate, fromIsoString, fromPosix, month, today)
-import DateFormat
-import Html exposing (Html, a, button, div, form, h1, h2, h3, h5, img, input, label, p, span, text)
-import Html.Attributes exposing (alt, class, datetime, href, id, name, placeholder, src, target, type_, value)
-import Html.Events exposing (onClick, onInput, onSubmit)
-import Html.Extra as Html exposing (nothing, viewIf)
+import Date exposing (month)
+import Html exposing (Html, a, button, div, form, h1, h2, h3, img, input, p, text)
+import Html.Attributes exposing (alt, class, href, id, name, placeholder, src, target, type_)
+import Html.Events exposing (onInput, onSubmit)
+import Html.Extra as Html exposing (viewIf)
 import Http exposing (..)
 import Iso8601 exposing (toTime)
 import Json.Decode as Decode exposing (Decoder, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as Encode
-import Time exposing (Month(..), Posix, millisToPosix, toMonth, toYear, utc)
-import WebpackAsset exposing (assetUrl)
+import Time exposing (Month(..), Posix, utc)
 
 
 
 ---- MODEL ----
 
 
-getArticles : String -> Cmd Msg
-getArticles searchTerm =
-    Http.get
-        { url = String.concat [ "/get-articles/", searchTerm ]
-        , expect = Http.expectJson GetArticles responseDecoder
-        }
-
-
-articleDecoder : Decoder Article
-articleDecoder =
-    succeed Article
-        |> required "title" string
-        |> required "published_date" decodePublishedDate
-        |> required "link" string
-        |> required "clean_url" string
-        |> required "excerpt" string
-        |> required "summary" string
-        |> optional "rights" string "unknown"
-        |> required "authors" (list string)
-        |> optional "media" string "noimage"
-
-
-decodePublishedDate : Decoder Posix
-decodePublishedDate =
-    Decode.string
-        |> Decode.andThen
-            (\stringDate ->
-                case Iso8601.toTime (String.replace " 00:00:00" "" stringDate) of
-                    Ok date ->
-                        Decode.succeed date
-
-                    Err _ ->
-                        Decode.fail "Decode failure"
-            )
-
-
 type alias PublishedDatePrecision =
     { date : String
     }
-
-
-responseDecoder : Decoder Response
-responseDecoder =
-    succeed Response
-        |> required "status" string
-        |> required "total_hits" int
-        |> required "page" int
-        |> required "total_pages" int
-        |> required "page_size" int
-        |> required "articles" (list articleDecoder)
 
 
 type alias Article =
@@ -123,6 +74,49 @@ init =
 
 
 
+---- DECODERS ----
+
+
+responseDecoder : Decoder Response
+responseDecoder =
+    succeed Response
+        |> required "status" string
+        |> required "total_hits" int
+        |> required "page" int
+        |> required "total_pages" int
+        |> required "page_size" int
+        |> required "articles" (list articleDecoder)
+
+
+articleDecoder : Decoder Article
+articleDecoder =
+    succeed Article
+        |> required "title" string
+        |> required "published_date" decodePublishedDate
+        |> required "link" string
+        |> required "clean_url" string
+        |> required "excerpt" string
+        |> required "summary" string
+        |> optional "rights" string "unknown"
+        |> required "authors" (list string)
+        |> optional "media" string "noimage"
+
+
+decodePublishedDate : Decoder Posix
+decodePublishedDate =
+    Decode.string
+        |> Decode.andThen
+            (\stringDate ->
+                case Iso8601.toTime (String.replace " 00:00:00" "" stringDate) of
+                    Ok date ->
+                        Decode.succeed date
+
+                    Err _ ->
+                        Decode.fail "Decode failure"
+            )
+
+
+
 ---- UPDATE ----
 
 
@@ -130,6 +124,54 @@ type Msg
     = GetArticles (Result Http.Error Response)
     | SearchTerm String
     | Fetch
+
+
+getArticles : String -> Cmd Msg
+getArticles searchTerm =
+    Http.get
+        { url = String.concat [ "/get-articles/", searchTerm ]
+        , expect = Http.expectJson GetArticles responseDecoder
+        }
+
+
+toStrMonth : Time.Month -> String
+toStrMonth month =
+    case month of
+        Jan ->
+            "Jan"
+
+        Feb ->
+            "Feb"
+
+        Mar ->
+            "Mar"
+
+        Apr ->
+            "Apr"
+
+        May ->
+            "May"
+
+        Jun ->
+            "Jun"
+
+        Jul ->
+            "Jul"
+
+        Aug ->
+            "Aug"
+
+        Sep ->
+            "Sep"
+
+        Oct ->
+            "Oct"
+
+        Nov ->
+            "Nov"
+
+        Dec ->
+            "Dec"
 
 
 generateErrorMessage : Http.Error -> String
@@ -175,46 +217,6 @@ update msg model =
 ---- VIEW ----
 
 
-toStrMonth : Time.Month -> String
-toStrMonth month =
-    case month of
-        Jan ->
-            "Jan"
-
-        Feb ->
-            "Feb"
-
-        Mar ->
-            "Mar"
-
-        Apr ->
-            "Apr"
-
-        May ->
-            "May"
-
-        Jun ->
-            "Jun"
-
-        Jul ->
-            "Jul"
-
-        Aug ->
-            "Aug"
-
-        Sep ->
-            "Sep"
-
-        Oct ->
-            "Oct"
-
-        Nov ->
-            "Nov"
-
-        Dec ->
-            "Dec"
-
-
 viewDatePublished : Posix -> Html Msg
 viewDatePublished date =
     let
@@ -237,8 +239,21 @@ searchForm : Html Msg
 searchForm =
     div [ class "search-wrapper" ]
         [ form [ onSubmit Fetch, class "search-form" ]
-            [ input [ type_ "text", name "search", id "search", onInput SearchTerm, placeholder "Search for topics and news", class "search" ] []
-            , input [ id "search-icon", type_ "image", src "/assets/search-icon.png", class "search-btn" ]
+            [ input
+                [ type_ "text"
+                , name "search"
+                , id "search"
+                , onInput SearchTerm
+                , placeholder "Search for topics and news"
+                , class "search"
+                ]
+                []
+            , input
+                [ id "search-icon"
+                , type_ "image"
+                , src "/assets/search-icon.png"
+                , class "search-btn"
+                ]
                 [ input [ type_ "submit" ] []
                 ]
             ]
