@@ -247,9 +247,9 @@ displayArticle : Article -> Html Msg
 displayArticle article =
     a [ href article.link, target "_blank", class "article-link" ]
         [ div [ class "card" ]
-            [ div [ class "card-info" ]
-                [ h3 [] [ text article.title ]
-                , viewDatePublished article.published_date
+            [ div [ class "article-info" ]
+                [ viewDatePublished article.published_date
+                , h3 [] [ text article.title ]
                 , p [] [ text article.excerpt ]
                 ]
             , div [ class "card-img" ]
@@ -261,7 +261,7 @@ displayArticle article =
 
 viewArticles : List Article -> Html Msg
 viewArticles articles =
-    div [ class "article-wrapper" ]
+    div [ class "article-results" ]
         (List.map displayArticle articles)
 
 

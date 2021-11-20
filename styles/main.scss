@@ -3,66 +3,30 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+// variables
+$background-color: white;
+$search-bar: darkgray;
+$search-bar-font: white;
+$search-bar-placeholder: lightgray;
+$article-results: #eff8f9;
+
+// global styles
 
 body {
+  padding: 0;
+  margin: 0;
   font-family: "Source Sans Pro", "Trebuchet MS", "Lucida Grande",
     "Bitstream Vera Sans", "Helvetica Neue", sans-serif;
   margin: 0;
   text-align: center;
   color: #293c4b;
-  background-color: #68b0ab;
-}
-
-h1 {
-  font-size: 4rem;
-}
-
-.article {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 25px;
-  border-radius: 8px;
-  background-color: #c8d5b9;
-  flex-grow: 1;
-  width: 250px;
-  height: 400px;
-}
-
-.article-wrapper {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-items: center;
-  justify-content: space-evenly;
-  background-color: #8fc0a9;
-  margin: 5%;
-  border-radius: 8px;
-}
-
-.article-title {
-  background-color: #c8d5b9;
-  font-size: 18px;
-  border-radius: 8px 8px 0 0;
-  font-weight: bold;
-  width: 100%;
-  padding: 15px;
-}
-
-.article-published-date {
-  font-size: 14px;
-  background-color: #c8d5b9;
-  font-weight: 300;
-  width: 100%;
-}
-
-.article-img {
-  width: 100%;
-  max-height: 200px;
-  object-fit: contain;
-  background-color: white;
-  padding: 0;
+  background-color: $background-color;
 }
 
 a {
@@ -70,117 +34,211 @@ a {
   color: inherit;
 }
 
-.search {
-  font-size: 3rem;
-  width: 100%;
-  padding: 0 16px;
-  background-color: transparent;
-  outline: none;
-  color: white;
-}
-
-.search-form {
-  display: flex;
-  background-color: darkgray;
-  outline: none;
-  align-items: center;
-  height: 5rem;
-  padding: 5px;
-  border-radius: 8px;
-}
-
-.search-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  min-height: 40px;
-  border-radius: 8px;
-}
-
 .search-wrapper input {
   border: none;
   outline: none;
 }
 
+.card {
+  background-color: $article-results;
+  padding-left: 15px;
+  border-bottom: 2px solid black;
+  padding-bottom: 10px;
+  margin-top: 25px;
+}
+
+.date-display {
+  padding-top: 7px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.article-results {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  margin: 4%;
+  padding: 15px;
+}
+
+.search-form {
+  display: flex;
+  flex-flow: row nowrap;
+  background-color: $search-bar;
+  outline: none;
+  align-items: center;
+  padding: 5px;
+  border-radius: 8px;
+}
+
+.search-wrapper {
+  flex-basis: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  min-height: 40px;
+  border-radius: 8px;
+}
+
+.search {
+  width: 100%;
+  padding: 0 16px;
+  background-color: transparent;
+  outline: none;
+  color: $search-bar-font;
+}
+
 .search-btn {
-  height: 4rem;
-  width: 4rem;
   border-radius: 50%;
   padding: 5px;
 }
 
 input::placeholder {
-  color: lightgray;
+  color: $search-bar-placeholder;
 }
 
-.card {
+// end of global styles
+
+// mobile styles
+
+h1 {
+  font-size: 2rem;
+}
+
+// .results {
+//   width: 85%;
+// }
+
+.article-info {
   display: flex;
-  justify-content: space-between;
-  max-height: fit-content;
-  margin: 15px;
-  padding: 8px;
-  border-bottom: 2px solid black;
-  width: 95%;
-  .card-info {
-    display: flex;
-    flex-direction: column;
-    padding-left: 8px;
-    h1 {
-      margin-top: 0;
-    }
-    p {
-      margin: 0;
-    }
-  }
-  .card-img {
-    display: flex;
-    flex-direction: row;
-    align-self: center;
-    justify-content: flex-end;
-    height: 100%;
-    width: 100%;
-    img {
-      margin: 15px;
-      padding: 5px 5px 0 10px;
-      max-width: 300px;
-      max-height: 150px;
-    }
-  }
+  flex-flow: column nowrap;
+  text-align: left;
+  font-size: 1rem;
 }
 
-@media (min-width: 500px) {
-  .search-form {
-    width: 95%;
-    height: 6rem;
-    font-size: 4rem;
+.article-results {
+  flex-basis: 85%;
+}
+
+.search-btn {
+  height: 2rem;
+  width: 2rem;
+}
+
+.search-form {
+  height: 2rem;
+  flex-basis: 83%;
+}
+
+.search {
+  font-size: 1.2rem;
+}
+
+.card-img {
+  img {
+    max-height: 200px;
+    max-width: 200px;
   }
+}
+// end of mobile styles
+
+// tablet styling
+
+@media screen and (min-width: 550px) {
+  .search-form {
+    flex-basis: 80%;
+  }
+  .article-info {
+    flex-basis: 100%;
+  }
+
+  .article-results {
+    flex-basis: 80%;
+    margin-top: 25px;
+  }
+
   .card {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    max-height: fit-content;
+    margin: 15px;
+    padding: 8px;
+    border-bottom: 2px solid black;
+    flex-basis: 95%;
     .card-info {
-      h3 {
-        font-size: 1.7rem;
+      display: flex;
+      flex-flow: column wrap;
+      padding-left: 8px;
+      h1 {
+        margin-top: 0;
       }
       p {
-        font-size: 1.5rem;
-        padding: 8px;
+        margin: 0;
+      }
+    }
+    .card-img {
+      display: flex;
+      flex-flow: row nowrap;
+      align-self: center;
+      justify-content: flex-end;
+      height: 100%;
+      flex-basis: 95%;
+      img {
+        margin: 15px;
+        padding: 5px 5px 0 10px;
+        max-width: 275px;
+        max-height: 150px;
       }
     }
   }
 }
 
-@media (min-width: 1281px) {
-  h1 {
-    font-size: 3rem;
+@media (min-width: 850px) {
+  .article-info {
+    font-size: 1rem;
   }
+
+  .article-results {
+    flex-basis: 75%;
+    max-width: 75%;
+    margin: auto;
+    margin-top: 25px;
+  }
+
   .search {
     font-size: 2rem;
   }
-  .search-form {
-    height: 4rem;
-    font-size: 2rem;
-    max-width: 50%;
-  }
-}
 
-.date-display {
-  font-weight: bold;
+  .search-form {
+    height: 2.5rem;
+    flex-basis: 74.5%;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  .search-btn {
+    height: 2rem;
+    width: 2rem;
+  }
+
+  .card {
+    flex-basis: 75%;
+    margin: auto;
+  }
+
+  @media (min-width: 1700px) {
+    .article-results {
+      flex-basis: 65%;
+      max-width: 65%;
+    }
+    .search-form {
+      flex-basis: 64.5%;
+    }
+    .card {
+      flex-basis: 65%;
+    }
+  }
 }
