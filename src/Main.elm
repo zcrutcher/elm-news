@@ -6,6 +6,7 @@ import DateFormat
 import Html exposing (Html, a, button, div, form, h1, h2, h3, h5, img, input, label, p, span, text)
 import Html.Attributes exposing (alt, class, datetime, href, id, name, placeholder, src, target, type_, value)
 import Html.Events exposing (onClick, onInput, onSubmit)
+import Html.Extra as Html exposing (nothing, viewIf)
 import Http exposing (..)
 import Iso8601 exposing (toTime)
 import Json.Decode as Decode exposing (Decoder, int, list, string, succeed)
@@ -25,23 +26,6 @@ getArticles searchTerm =
         { url = String.concat [ "/get-articles/", searchTerm ]
         , expect = Http.expectJson GetArticles responseDecoder
         }
-
-
-
--- let
---     requestHeader : List Header
---     requestHeader =
---         [ Http.header "x-api-key" "4sO4JEcX3HwMRR7yRvxAQAE67xRBVj__psUpcKmioNc" ]
--- in
--- Http.request
---     { method = "GET"
---     , headers = requestHeader
---     , url = String.concat [ "https://api.newscatcherapi.com/v2/search?q=", searchTerm, "&lang=en" ]
---     , body = Http.emptyBody
---     , expect = Http.expectJson GetArticles responseDecoder
---     , timeout = Nothing
---     , tracker = Nothing
---     }
 
 
 articleDecoder : Decoder Article
@@ -171,12 +155,6 @@ type alias ErrorStatus =
     { errorStatus : String }
 
 
-decodeBadBody : Decoder ErrorStatus
-decodeBadBody =
-    succeed ErrorStatus
-        |> required "status" string
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -289,13 +267,9 @@ viewArticles articles =
         (List.map displayArticle articles)
 
 
-viewError : Bool -> String -> Html Msg
-viewError display message =
-    if display == True then
-        h2 [ class "error-msg" ] [ text message ]
-
-    else
-        text ""
+displayError : String -> Html Msg
+displayError message =
+    h2 [ class "error-msg" ] [ text message ]
 
 
 view : Model -> Html Msg
@@ -303,7 +277,7 @@ view model =
     div []
         [ h1 [] [ text "Elm News Search" ]
         , searchForm
-        , viewError (String.length model.errorMessage > 0) model.errorMessage
+        , viewIf (String.length model.errorMessage > 0) (displayError model.errorMessage)
         , viewArticles model.response.articles
         ]
 
