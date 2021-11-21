@@ -1,0 +1,54 @@
+{
+  "name": "elm-news",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "engines": {
+    "node": "14.x"
+  },
+  "scripts": {
+    "dev-start": "node ./server/server.js",
+    "dev-webpack": "rm -rf dist && npx webpack --config=config/webpack.dev.js",
+    "build": "webpack --config=config/webpack.prod.js --progress",
+    "start": "node ./server/server.js",
+    "webpack": "rm -rf dist && npx webpack --config=config/webpack.prod.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zcrutcher/elm-news.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zcrutcher/elm-news/issues"
+  },
+  "homepage": "https://github.com/zcrutcher/elm-news#readme",
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/preset-env": "^7.16.0",
+    "babel-loader": "^8.2.3",
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.5.1",
+    "elm-webpack-loader": "^8.0.0",
+    "sass": "^1.43.4",
+    "sass-loader": "^12.3.0"
+  },
+  "dependencies": {
+    "babel-elm-assets-plugin": "^1.2.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "elm": "^0.19.1-5",
+    "elm-webpack-loader": "^8.0.0",
+    "express": "^4.17.1",
+    "html-loader": "^3.0.1",
+    "html-webpack-plugin": "^5.5.0",
+    "node-elm-compiler": "^5.0.6",
+    "node-fetch": "^2.1.0",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.62.1",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.4.0"
+  }
+}
